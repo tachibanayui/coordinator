@@ -26,7 +26,7 @@ pub trait MyBalancer<T: ::std::fmt::Debug> {
                 num += 1;
             }
 
-            return num;
+            num
         }
     }
 }

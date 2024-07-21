@@ -31,6 +31,11 @@ where
         self.0.get_or_init(|| CoordinatorInner::new(self.1))
     }
 
+    /// Create a new coordinator
+    ///
+    /// # Arguments
+    /// * `queue_threshold` - Specify the threshold when the number of pending tasks in a worker queue
+    /// prevents [`TaskPrefs::Preferred`] from adding new task to this queue
     pub fn new(queue_threshold: usize) -> Self {
         Self(OnceLock::new(), queue_threshold)
     }
@@ -82,6 +87,8 @@ where
     TIn: Send + UnwindSafe + 'static,
     TOut: Send + UnwindSafe + 'static,
 {
+    /// Create another consumer of this [`Coordinator`]. Note that this only increase the reference count
+    /// on a internal structure, not creating a new coordinator
     fn clone(&self) -> Self {
         self.get_inner()
             .consumer_count

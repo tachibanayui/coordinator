@@ -26,9 +26,9 @@ pub struct Ball {
 impl Clone for Ball {
     fn clone(&self) -> Self {
         Self {
-            size: self.size.clone(),
-            weight: self.weight.clone(),
-            bounciness: self.bounciness.clone(),
+            size: self.size,
+            weight: self.weight,
+            bounciness: self.bounciness,
         }
     }
 }
@@ -172,7 +172,7 @@ where
     async fn do_work(&mut self, task: CatFamilyInput<I, O>) -> Self::Output {
         match task {
             CatFamilyInput::LocateObject(obj) => {
-                let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+                let wait_time = 3000u64.saturating_sub(self.exp as u64);
                 tokio::time::sleep(Duration::from_millis(wait_time)).await;
                 let obj = obj.lock().await;
                 let x_coord = obj.size()[0] + 2.3;
@@ -183,7 +183,7 @@ where
                 CatFamilyOutput::LocateObject(rs)
             }
             CatFamilyInput::Upgrade(obj, material) => {
-                let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+                let wait_time = 3000u64.saturating_sub(self.exp as u64);
                 tokio::time::sleep(Duration::from_millis(wait_time)).await;
                 let mut obj = obj.lock().await;
                 let new_weight = obj.weight() + material.weight();
@@ -192,7 +192,7 @@ where
                 CatFamilyOutput::Upgrade(())
             }
             CatFamilyInput::Meow() => {
-                let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+                let wait_time = 3000u64.saturating_sub(self.exp as u64);
                 tokio::time::sleep(Duration::from_millis(wait_time)).await;
                 println!("Robot cat `{}` say meow!", self.name);
                 println!("Cat {} has gained 10 exp! Total: {}", self.name, self.exp);
@@ -201,7 +201,7 @@ where
             CatFamilyInput::MeowRepeatedly(times) => {
                 // There's no easy way to provide default implementation without creating a trait
                 for _ in 0..times {
-                    let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+                    let wait_time = 3000u64.saturating_sub(self.exp as u64);
                     tokio::time::sleep(Duration::from_millis(wait_time)).await;
                     println!("Robot cat `{}` say meow!", self.name);
                     println!("Cat {} has gained 10 exp! Total: {}", self.name, self.exp);
@@ -280,7 +280,7 @@ async fn main() {
             cat_family
                 .run(CatFamilyInput::MeowRepeatedly(3), TaskPrefs::Required(cat))
                 .await?;
-            return Ok::<(), Box<dyn Error + Send + Sync + 'static>>(());
+            Ok::<(), Box<dyn Error + Send + Sync + 'static>>(())
         });
     }
 

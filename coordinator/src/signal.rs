@@ -19,7 +19,7 @@ impl<T> JoinSignal<T> {
 
         data.1.lock().await.replace(val);
         data.0.notify(usize::MAX);
-        return None;
+        None
     }
 }
 
@@ -45,15 +45,12 @@ impl<T: Send> JoinHandle for ImplJoinHandle<T> {
         listener!(self.signal.0 => lis);
         lis.await;
 
-        let val = self
-            .signal
+        self.signal
             .1
             .lock()
             .await
             .take()
-            .expect("Value must be set before notify event!");
-
-        return val;
+            .expect("Value must be set before notify event!")
     }
 }
 

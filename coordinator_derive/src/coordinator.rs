@@ -36,7 +36,7 @@ pub(crate) fn coordinator(
     let in_enum = gen_io_enum(&body, &name_enum_input, &name_enum_output, &ident_generics)?;
     let ref_struct = gen_refs(
         &body,
-        &name,
+        name,
         &name_any_ref,
         &name_prefer_ref,
         &name_require_ref,
@@ -129,11 +129,10 @@ fn gen_trait(
     let mut mwc = generic.make_where_clause().clone();
     let iig = to_ident_generics(ident_generics);
     let igp = &ident_generics.params;
-    ident_generics
-        .where_clause
-        .as_ref()
-        .map(|x| mwc.predicates.extend(x.predicates.iter().cloned()));
-    let ig = to_ident_generics(&generic);
+    if let Some(x) = ident_generics.where_clause.as_ref() {
+        mwc.predicates.extend(x.predicates.iter().cloned())
+    }
+    let ig = to_ident_generics(generic);
     let wrapper = quote! {
         #vis struct #trait_name_wrapper<T>(T);
         impl<#igp, Slf: #trait_name #ig + ::std::marker::Send> ::coordinator::TaskProcessor <#in_name #iig> for #trait_name_wrapper <Slf> #mwc {
@@ -156,7 +155,7 @@ fn gen_trait(
 
     };
 
-    return quote! {#new_trait #wrapper};
+    quote! {#new_trait #wrapper}
 }
 
 fn ident_generic_params(x: &GenericParam) -> &Ident {
@@ -315,12 +314,9 @@ fn gen_refs(
         method.sig.asyncness = Some(parse_quote!(async));
         method.sig.inputs.insert(0, parse_quote!(&self));
         method.sig.generics.params.clear();
-        method
-            .sig
-            .generics
-            .where_clause
-            .as_mut()
-            .map(|x| x.predicates.clear());
+        if let Some(x) = method.sig.generics.where_clause.as_mut() {
+            x.predicates.clear()
+        }
 
         let old_ret = match &method.sig.output {
             ReturnType::Default => quote!(()),
@@ -438,10 +434,9 @@ fn make_thread_safe(generics: &mut Generics) {
     for p in generics.params.iter() {
         if let GenericParam::Type(gty) = &p {
             let pid = &gty.ident;
-            generics
-                .where_clause
-                .as_mut()
-                .map(|x| x.predicates.push(parse_quote!(#pid: #sb)));
+            if let Some(x) = generics.where_clause.as_mut() {
+                x.predicates.push(parse_quote!(#pid: #sb))
+            }
         }
     }
 }
@@ -453,7 +448,7 @@ fn compose_generic(body: &ItemTrait) -> Result<Generics, syn::Error> {
     let is_ident_used = generics
         .params
         .iter()
-        .find(|x| matches!(x, GenericParam::Type(ty) if ty.ident.to_string() == "TIdent"));
+        .find(|x| matches!(x, GenericParam::Type(ty) if ty.ident == "TIdent"));
 
     if let Some(params) = is_ident_used {
         return Err(syn::Error::new(

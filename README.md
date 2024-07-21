@@ -27,7 +27,7 @@ This crate is available on [crates.io](https://crates.io/crates/coordinator). Pl
 
 For full examples, check out `playground/examples`
 
-```rs
+```rust
 // Create a worker that sleeps for 1 sec and return a number that double the input
 struct Doubler(String);
 impl TaskProcessor<i32> for Doubler {
@@ -65,7 +65,7 @@ println!("Task result: {}", rs);
 
 If your task processors can process different types of tasks (eg: `CalculatorProcessor` can process both `add` and `subtract` tasks), you can use the `#[coordinator]` attribute macro to avoid needing to define your own input and output enums and manually dispatch them when implementing `TaskProcessor`
 
-```rs
+```rust
 pub trait InteractableObject {
     fn size(&self) -> [f32; 3];
     fn weight(&self) -> f32;

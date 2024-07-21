@@ -74,7 +74,7 @@ where
                     num += 1;
                 }
 
-                return MyBalancerOutput::DrainBroadcast(num);
+                MyBalancerOutput::DrainBroadcast(num)
             }
         }
     }

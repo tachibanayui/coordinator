@@ -25,9 +25,9 @@ pub struct Ball {
 impl Clone for Ball {
     fn clone(&self) -> Self {
         Self {
-            size: self.size.clone(),
-            weight: self.weight.clone(),
-            bounciness: self.bounciness.clone(),
+            size: self.size,
+            weight: self.weight,
+            bounciness: self.bounciness,
         }
     }
 }
@@ -147,7 +147,7 @@ where
     I: InteractableObject + RefUnwindSafe + Send + Sync + 'static,
 {
     async fn locate_object(&mut self, obj: ArcMut<I>) -> Option<[f32; 3]> {
-        let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+        let wait_time = 3000u64.saturating_sub(self.exp as u64);
         tokio::time::sleep(Duration::from_millis(wait_time)).await;
         let obj = obj.lock().await;
 
@@ -160,7 +160,7 @@ where
     }
 
     async fn upgrade<O: InteractableObject>(&mut self, obj: ArcMut<I>, material: O) {
-        let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+        let wait_time = 3000u64.saturating_sub(self.exp as u64);
         tokio::time::sleep(Duration::from_millis(wait_time)).await;
         let mut obj = obj.lock().await;
         let new_weight = obj.weight() + material.weight();
@@ -170,7 +170,7 @@ where
     }
 
     async fn meow(&mut self) -> bool {
-        let wait_time = 3000u64.checked_sub(self.exp as u64).unwrap_or(0);
+        let wait_time = 3000u64.saturating_sub(self.exp as u64);
         tokio::time::sleep(Duration::from_millis(wait_time)).await;
         println!("Robot cat `{}` say meow!", self.name);
         self.exp += 10;
@@ -245,7 +245,7 @@ async fn main() {
 
             // We don't care about the result here so no need to join
             cat_family.require(&cat).meow_repeatedly(3).await?;
-            return Ok::<(), Box<dyn Error + Send + Sync + 'static>>(());
+            Ok::<(), Box<dyn Error + Send + Sync + 'static>>(())
         });
     }
 

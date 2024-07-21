@@ -189,7 +189,7 @@ where
         };
 
         info.task_handle.0.notify(usize::MAX);
-        return true;
+        true
     }
 
     #[tracing::instrument(target = "lb", skip(self))]
