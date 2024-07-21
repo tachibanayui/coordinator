@@ -2,16 +2,22 @@
 name = "coordinator"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "Coordinator is a library to load balance tasks into task runners"
+repository = "https://github.com/tachibanayui/coordinator"
+readme = "README.md"
+keywords = ["coordinator", "task", "load-balance", "task-runner"]
+authors = ["tachibanayui"]
 
 [dependencies]
 event-listener = "5.3.1"
-tokio = { version = "1.38.0", features = ["full"] }
 futures = "0.3.30"
 async-channel = "2.3.1"
 concurrent-queue = "2.5.0"
-thiserror = "1.0.61"
-atomic_float = "1.0.0"
 derivative = "2.2.0"
 tracing = "0.1"
+tokio = { version = "1.38.0", features = ["full"] }
+coordinator_derive = { path = "../coordinator_derive", version = "0.1.0" }
+
+[dev-dependencies]
 tracing-subscriber = "0.3"
-coordinator_derive = { path = "../coordinator_derive" }

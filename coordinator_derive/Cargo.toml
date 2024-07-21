@@ -2,6 +2,12 @@
 name = "coordinator_derive"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "coordinator_derive is a supporting library for macros"
+repository = "https://github.com/tachibanayui/coordinator"
+readme = "README.md"
+keywords = ["coordinator", "task", "load-balance", "task-runner"]
+authors = ["tachibanayui"]
 
 [lib]
 proc-macro = true
