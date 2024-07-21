@@ -1,5 +1,10 @@
 # Coordinator
-
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](
+https://github.com/tachibanayui/coordinator)
+[![Cargo](https://img.shields.io/crates/v/coordinator.svg)](
+https://crates.io/crates/coordinator)
+[![Documentation](https://docs.rs/coordinator/badge.svg)](
+https://docs.rs/coordinator/latest/coordinator/)
 ## Description
 
 Coordinator is a simple library to load balance tasks into task runners that run asynchronously. Each worker added into the coordinator will have a queue to process work unit (or task). Each worker will only process one task at a given time.
