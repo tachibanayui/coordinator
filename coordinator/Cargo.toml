@@ -1,10 +1,11 @@
 [package]
 name = "coordinator"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "Coordinator is a library to load balance tasks into task runners"
 repository = "https://github.com/tachibanayui/coordinator"
+documentation = "https://docs.rs/coordinator"
 readme = "README.md"
 keywords = ["coordinator", "task", "load-balance", "task-runner"]
 authors = ["tachibanayui"]
